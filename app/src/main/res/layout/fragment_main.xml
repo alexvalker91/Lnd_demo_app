@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/etAccountNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="AccountNumber" />
+
+    <TextView
+        android:id="@+id/tvAccountBalance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="accountBalance"
+        android:layout_marginTop="12dp" />
+
+    <TextView
+        android:id="@+id/tvAccountId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="accountId"
+        android:layout_marginTop="12dp" />
+
+    <TextView
+        android:id="@+id/tvId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="id"
+        android:layout_marginTop="12dp" />
+
+    <Button
+        android:id="@+id/btnGetBalances"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Get Balances"
+        android:layout_marginTop="16dp" />
+
+    <include
+        android:id="@+id/spinner"
+        layout="@layout/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        tools:visibility="visible" />
+</LinearLayout>
