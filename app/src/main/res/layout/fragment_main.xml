@@ -48,4 +48,31 @@
         android:layout_gravity="center"
         android:visibility="gone"
         tools:visibility="visible" />
+
+
+    <EditText
+        android:id="@+id/etAmount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="amount" />
+    <EditText
+        android:id="@+id/etClientIdFrom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="clientIdFrom" />
+    <EditText
+        android:id="@+id/etAccountNumberFrom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="accountNumberFrom" />
+    <EditText
+        android:id="@+id/etAccountNumberTo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="accountNumberTo" />
+    <EditText
+        android:id="@+id/etComment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="comment" />
 </LinearLayout>

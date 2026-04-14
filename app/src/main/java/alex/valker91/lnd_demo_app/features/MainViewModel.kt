@@ -17,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val getBalancesUseCase: GetBalancesUseCase
+    private val getBalancesUseCase: GetBalancesUseCase,
+    private val createNewSynchronizedMoneyTransferUseCase: CreateNewSynchronizedMoneyTransferUseCase
 ) : ViewModel() {
 
     private val _stateFlow: MutableStateFlow<MainScreenState> =
@@ -29,11 +30,57 @@ class MainViewModel @Inject constructor(
     fun handleIntent(event: MainEvent) {
         when (event) {
             is GetBalance -> getBalance(event.accountNumber)
+            is CreateNewSynchronizedMoneyTransfer -> createNewSynchronizedMoneyTransfer(event.amount,
+                event.clientIdFrom,
+                event.accountNumberFrom,
+                event.accountNumberTo,
+                event.comment)
         }
     }
 
 //    private val _effect = MutableSharedFlow<CreateClientEffect>()
 //    val effect: SharedFlow<CreateClientEffect> = _effect.asSharedFlow()
+
+    private fun createNewSynchronizedMoneyTransfer(amount: Int,
+                                                   clientIdFrom: String,
+                                                   accountNumberFrom: String,
+                                                   accountNumberTo: String,
+                                                   comment: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _stateFlow.value =
+                _stateFlow.value.copy(isLoading = true)
+            delay(1_000)
+            val result: Result<SynchronizedMoneyTransferResponse> =
+                createNewSynchronizedMoneyTransferUseCase.execute(
+                    amount,
+                    clientIdFrom,
+                    accountNumberFrom,
+                    accountNumberTo,
+                    comment
+                )
+            Log.d("dfasffsfasdf", "$result")
+            withContext(Dispatchers.Main) {
+                when (result) {
+                    is Result.Success -> {
+
+                    }
+
+                    is Result.Error -> {
+                        _stateFlow.value =
+                            _stateFlow.value.copy(
+                                isLoading = false,
+                                error = result.error
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        _stateFlow.value =
+                            _stateFlow.value.copy(isLoading = true)
+                    }
+                }
+            }
+        }
+        }
 
     private fun getBalance(accountNumber: String) {
         viewModelScope.launch(Dispatchers.IO) {
