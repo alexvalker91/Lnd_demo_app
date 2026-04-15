@@ -1,6 +1,7 @@
 package alex.valker91.lnd_demo_app.di
 
 import alex.valker91.lnd_demo_app.features.BalancesApiService
+import alex.valker91.lnd_demo_app.features.MoneyTransferService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,4 +27,9 @@ object NetworkModule {
     @Singleton
     fun provideBalancesApiService(retrofit: Retrofit): BalancesApiService =
         retrofit.create(BalancesApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideMoneyTransferService(retrofit: Retrofit): MoneyTransferService =
+        retrofit.create(MoneyTransferService::class.java)
 }

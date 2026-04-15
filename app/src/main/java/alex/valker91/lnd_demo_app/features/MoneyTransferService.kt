@@ -2,10 +2,11 @@ package alex.valker91.lnd_demo_app.features
 
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 
 interface MoneyTransferService {
 
-    @GET("/api/payments")
+    @POST("/api/payments")
     suspend fun createNewSynchronizedMoneyTransfer(
         @Body request: SynchronizedMoneyTransferRequest
     ): SynchronizedMoneyTransferResponse

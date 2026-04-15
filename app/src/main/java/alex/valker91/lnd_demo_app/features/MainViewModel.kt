@@ -62,7 +62,11 @@ class MainViewModel @Inject constructor(
             withContext(Dispatchers.Main) {
                 when (result) {
                     is Result.Success -> {
-
+                        _stateFlow.value =
+                            _stateFlow.value.copy(
+                                originatorId = result.data.originatorId,
+                                isLoading = false,
+                                error = null)
                     }
 
                     is Result.Error -> {

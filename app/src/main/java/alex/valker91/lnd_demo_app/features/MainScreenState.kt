@@ -5,6 +5,7 @@ data class MainScreenState(
     val accountBalance: String = "",
     val accountId: String = "",
     val id: String = "",
+    val originatorId: String = "",
     val isLoading: Boolean = false,
     val error: Exception? = null
 )

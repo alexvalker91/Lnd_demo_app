@@ -43,9 +43,10 @@ class MainFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.stateFlow.collect { result ->
-                    binding.tvAccountBalance.text = result.accountBalance
-                    binding.tvAccountId.text = result.accountId
-                    binding.tvId.text = result.id
+                    binding.tvAccountBalance1.text = result.accountBalance
+                    binding.tvAccountId1.text = result.accountId
+                    binding.tvId1.text = result.id
+                    binding.OriginatorId.text = result.originatorId
                     if (result.isLoading) {
                         binding.spinner.root.isVisible = true
                     } else {
@@ -59,6 +60,16 @@ class MainFragment : Fragment() {
     private fun observerButton() {
         binding.btnGetBalances.setOnClickListener {
             viewModel.handleIntent(GetBalance(binding.etAccountNumber.text.toString()))
+        }
+
+        binding.btnCreate.setOnClickListener {
+            viewModel.handleIntent(CreateNewSynchronizedMoneyTransfer(
+                binding.amount.text.toString().toInt(),
+                binding.clientIdFrom.text.toString(),
+            binding.accountNumberFrom.text.toString(),
+            binding.accountNumberTo.text.toString(),
+            binding.comment.text.toString())
+                )
         }
     }
 
