@@ -38,6 +38,8 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private val _effect = MutableSharedFlow<MainEffect>()
+    val effect: SharedFlow<MainEffect> = _effect.asSharedFlow()
 //    private val _effect = MutableSharedFlow<CreateClientEffect>()
 //    val effect: SharedFlow<CreateClientEffect> = _effect.asSharedFlow()
 
@@ -67,6 +69,7 @@ class MainViewModel @Inject constructor(
                                 originatorId = result.data.originatorId,
                                 isLoading = false,
                                 error = null)
+                        _effect.emit(MainEffect.ShowSuccessToast)
                     }
 
                     is Result.Error -> {
@@ -75,6 +78,8 @@ class MainViewModel @Inject constructor(
                                 isLoading = false,
                                 error = result.error
                             )
+                        val errorMessage = result.error.message ?: "Unknown Error"
+                        _effect.emit(MainEffect.ShowErrorToast(errorMessage))
                     }
 
                     is Result.Loading -> {
@@ -103,6 +108,7 @@ class MainViewModel @Inject constructor(
                                 id = result.data.id.toString(),
                                 isLoading = false,
                                 error = null)
+                        _effect.emit(MainEffect.ShowSuccessToast)
 //                        _effect.emit(CreateClientEffect.NavigateBackWithSuccess)
                     }
                     is Result.Error -> {
@@ -113,6 +119,8 @@ class MainViewModel @Inject constructor(
                                 id = "",
                                 isLoading = false,
                                 error = result.error)
+                        val errorMessage = result.error.message ?: "Unknown Error"
+                        _effect.emit(MainEffect.ShowErrorToast(errorMessage))
                     }
                     is Result.Loading -> {
                         _stateFlow.value =

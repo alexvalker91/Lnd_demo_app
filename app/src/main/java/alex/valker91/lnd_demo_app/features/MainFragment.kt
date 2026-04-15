@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import alex.valker91.lnd_demo_app.databinding.FragmentMainBinding
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -37,6 +38,24 @@ class MainFragment : Fragment() {
 
         observerFlow()
         observerButton()
+        observeEffects()
+    }
+
+    private fun observeEffects() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.effect.collect { effect ->
+                    when (effect) {
+                        is MainEffect.ShowSuccessToast -> {
+                            Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
+                        }
+                        is MainEffect.ShowErrorToast -> {
+                            Toast.makeText(requireContext(), effect.message, Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun observerFlow() {
@@ -64,7 +83,7 @@ class MainFragment : Fragment() {
 
         binding.btnCreate.setOnClickListener {
             viewModel.handleIntent(CreateNewSynchronizedMoneyTransfer(
-                binding.amount.text.toString().toInt(),
+                amount = binding.amount.text.toString().toIntOrNull() ?: 0,
                 binding.clientIdFrom.text.toString(),
             binding.accountNumberFrom.text.toString(),
             binding.accountNumberTo.text.toString(),
