@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import alex.valker91.lnd_demo_app.databinding.FragmentMainBinding
+import android.os.SystemClock
+import android.util.Log
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -16,8 +18,17 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.getValue
 
+import com.google.firebase.perf.FirebasePerformance
+import com.google.firebase.perf.metrics.Trace
+
 @AndroidEntryPoint
 class MainFragment : Fragment() {
+
+    private var balanceTrace: Trace? = null
+    private var balanceStartMs: Long = 0L
+
+    private var transferTrace: Trace? = null
+    private var transferStartMs: Long = 0L
 
     private val viewModel: MainViewModel by viewModels()
 
@@ -35,6 +46,8 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        FirebasePerformance.getInstance().isPerformanceCollectionEnabled = true
 
         observerFlow()
         observerButton()
@@ -66,10 +79,23 @@ class MainFragment : Fragment() {
                     binding.tvAccountId1.text = result.accountId
                     binding.tvId1.text = result.id
                     binding.OriginatorId.text = result.originatorId
-                    if (result.isLoading) {
-                        binding.spinner.root.isVisible = true
-                    } else {
-                        binding.spinner.root.isVisible = false
+                    binding.spinner.root.isVisible = result.isLoading
+
+                    if (!result.isLoading) {
+                        balanceTrace?.let {
+                            val duration = SystemClock.elapsedRealtime() - balanceStartMs
+                            it.putMetric("duration_ms", duration)
+                            it.stop()
+                            Log.d("MyPerfTest", "btn_get_balance_full_time завершен: $duration ms")
+                            balanceTrace = null
+                        }
+                        transferTrace?.let {
+                            val duration = SystemClock.elapsedRealtime() - transferStartMs
+                            it.putMetric("duration_ms", duration)
+                            it.stop()
+                            Log.d("MyPerfTest", "btn_create_transfer_full_time завершен: $duration ms")
+                            transferTrace = null
+                        }
                     }
                 }
             }
@@ -78,22 +104,41 @@ class MainFragment : Fragment() {
 
     private fun observerButton() {
         binding.btnGetBalances.setOnClickListener {
+            balanceTrace?.stop()
+            balanceTrace = FirebasePerformance.getInstance()
+                .newTrace("btn_get_balance_full_time").apply { start() }
+            balanceStartMs = SystemClock.elapsedRealtime()
+            Log.d("MyPerfTest", "Запуск трейса btn_get_balance_full_time")
+
             viewModel.handleIntent(GetBalance(binding.etAccountNumber.text.toString()))
         }
 
         binding.btnCreate.setOnClickListener {
-            viewModel.handleIntent(CreateNewSynchronizedMoneyTransfer(
-                amount = binding.amount.text.toString().toIntOrNull() ?: 0,
-                binding.clientIdFrom.text.toString(),
-            binding.accountNumberFrom.text.toString(),
-            binding.accountNumberTo.text.toString(),
-            binding.comment.text.toString())
+            transferTrace?.stop()
+            transferTrace = FirebasePerformance.getInstance()
+                .newTrace("btn_create_transfer_full_time").apply { start() }
+            transferStartMs = SystemClock.elapsedRealtime()
+            Log.d("MyPerfTest", "Запуск трейса btn_create_transfer_full_time")
+
+            viewModel.handleIntent(
+                CreateNewSynchronizedMoneyTransfer(
+                    amount = binding.amount.text.toString().toIntOrNull() ?: 0,
+                    binding.clientIdFrom.text.toString(),
+                    binding.accountNumberFrom.text.toString(),
+                    binding.accountNumberTo.text.toString(),
+                    binding.comment.text.toString()
                 )
+            )
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+
+        balanceTrace?.stop()
+        transferTrace?.stop()
+        balanceTrace = null
+        transferTrace = null
     }
 }
