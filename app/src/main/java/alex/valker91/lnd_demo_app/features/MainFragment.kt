@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.getValue
@@ -46,7 +47,7 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        
         FirebasePerformance.getInstance().isPerformanceCollectionEnabled = true
 
         observerFlow()
@@ -88,6 +89,7 @@ class MainFragment : Fragment() {
                             it.stop()
                             Log.d("MyPerfTest", "btn_get_balance_full_time завершен: $duration ms")
                             balanceTrace = null
+                            Log.d("my_test_log", "complete btn_get_balance_full_time ${System.currentTimeMillis()}")
                         }
                         transferTrace?.let {
                             val duration = SystemClock.elapsedRealtime() - transferStartMs
@@ -108,7 +110,7 @@ class MainFragment : Fragment() {
             balanceTrace = FirebasePerformance.getInstance()
                 .newTrace("btn_get_balance_full_time").apply { start() }
             balanceStartMs = SystemClock.elapsedRealtime()
-            Log.d("MyPerfTest", "Запуск трейса btn_get_balance_full_time")
+            Log.d("my_test_log", "click btn_get_balance_full_time ${System.currentTimeMillis()}")
 
             viewModel.handleIntent(GetBalance(binding.etAccountNumber.text.toString()))
         }
@@ -129,6 +131,12 @@ class MainFragment : Fragment() {
                     binding.comment.text.toString()
                 )
             )
+        }
+
+        binding.fabAction.setOnClickListener {
+            Log.d("my_test_log_fab_click", "click fab ${System.currentTimeMillis()}")
+            val action = MainFragmentDirections.actionMainFragmentToSecondFragment()
+            findNavController().navigate(action)
         }
     }
 
