@@ -1,6 +1,6 @@
 package alex.valker91.lnd_demo_app.features
 
-import android.util.Log
+import alex.valker91.lnd_demo_app.traceSuspend
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,8 +40,6 @@ class MainViewModel @Inject constructor(
 
     private val _effect = MutableSharedFlow<MainEffect>()
     val effect: SharedFlow<MainEffect> = _effect.asSharedFlow()
-//    private val _effect = MutableSharedFlow<CreateClientEffect>()
-//    val effect: SharedFlow<CreateClientEffect> = _effect.asSharedFlow()
 
     private fun createNewSynchronizedMoneyTransfer(amount: Int,
                                                    clientIdFrom: String,
@@ -51,16 +49,23 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _stateFlow.value =
                 _stateFlow.value.copy(isLoading = true)
-            delay(1_000)
+            delay(2_000)
+
             val result: Result<SynchronizedMoneyTransferResponse> =
-                createNewSynchronizedMoneyTransferUseCase.execute(
-                    amount,
-                    clientIdFrom,
-                    accountNumberFrom,
-                    accountNumberTo,
-                    comment
-                )
-            Log.d("dfasffsfasdf", "$result")
+                traceSuspend("CreateMoneyTransferUseCase") {
+                    createNewSynchronizedMoneyTransferUseCase.execute(
+                        amount, clientIdFrom, accountNumberFrom, accountNumberTo, comment
+                    )
+                }
+//            val result: Result<SynchronizedMoneyTransferResponse> =
+//                createNewSynchronizedMoneyTransferUseCase.execute(
+//                    amount,
+//                    clientIdFrom,
+//                    accountNumberFrom,
+//                    accountNumberTo,
+//                    comment
+//                )
+
             withContext(Dispatchers.Main) {
                 when (result) {
                     is Result.Success -> {
@@ -95,9 +100,13 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _stateFlow.value =
                 _stateFlow.value.copy(isLoading = true)
-            delay(1_000)
-            val result: Result<BalanceApiResponse> = getBalancesUseCase.execute(accountNumber)
-            Log.d("dfasffsfasdf","$result")
+            delay(2_000)
+
+            val result: Result<BalanceApiResponse> = traceSuspend("GetBalancesUseCase") {
+                getBalancesUseCase.execute(accountNumber)
+            }
+//            val result: Result<BalanceApiResponse> = getBalancesUseCase.execute(accountNumber)
+
             withContext(Dispatchers.Main) {
                 when (result) {
                     is Result.Success -> {
@@ -109,7 +118,6 @@ class MainViewModel @Inject constructor(
                                 isLoading = false,
                                 error = null)
                         _effect.emit(MainEffect.ShowSuccessToast)
-//                        _effect.emit(CreateClientEffect.NavigateBackWithSuccess)
                     }
                     is Result.Error -> {
                         _stateFlow.value =

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import alex.valker91.lnd_demo_app.databinding.FragmentMainBinding
-import android.os.SystemClock
 import android.util.Log
 import android.widget.Toast
 import androidx.core.view.isVisible
@@ -21,15 +20,10 @@ import kotlin.getValue
 
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
+import io.sentry.Sentry
 
 @AndroidEntryPoint
 class MainFragment : Fragment() {
-
-    private var balanceTrace: Trace? = null
-    private var balanceStartMs: Long = 0L
-
-    private var transferTrace: Trace? = null
-    private var transferStartMs: Long = 0L
 
     private val viewModel: MainViewModel by viewModels()
 
@@ -83,21 +77,7 @@ class MainFragment : Fragment() {
                     binding.spinner.root.isVisible = result.isLoading
 
                     if (!result.isLoading) {
-                        balanceTrace?.let {
-                            val duration = SystemClock.elapsedRealtime() - balanceStartMs
-                            it.putMetric("duration_ms", duration)
-                            it.stop()
-                            Log.d("MyPerfTest", "btn_get_balance_full_time завершен: $duration ms")
-                            balanceTrace = null
-                            Log.d("my_test_log", "complete btn_get_balance_full_time ${System.currentTimeMillis()}")
-                        }
-                        transferTrace?.let {
-                            val duration = SystemClock.elapsedRealtime() - transferStartMs
-                            it.putMetric("duration_ms", duration)
-                            it.stop()
-                            Log.d("MyPerfTest", "btn_create_transfer_full_time завершен: $duration ms")
-                            transferTrace = null
-                        }
+                        Sentry.reportFullyDisplayed()
                     }
                 }
             }
@@ -106,20 +86,12 @@ class MainFragment : Fragment() {
 
     private fun observerButton() {
         binding.btnGetBalances.setOnClickListener {
-            balanceTrace?.stop()
-            balanceTrace = FirebasePerformance.getInstance()
-                .newTrace("btn_get_balance_full_time").apply { start() }
-            balanceStartMs = SystemClock.elapsedRealtime()
             Log.d("my_test_log", "click btn_get_balance_full_time ${System.currentTimeMillis()}")
 
             viewModel.handleIntent(GetBalance(binding.etAccountNumber.text.toString()))
         }
 
         binding.btnCreate.setOnClickListener {
-            transferTrace?.stop()
-            transferTrace = FirebasePerformance.getInstance()
-                .newTrace("btn_create_transfer_full_time").apply { start() }
-            transferStartMs = SystemClock.elapsedRealtime()
             Log.d("MyPerfTest", "Запуск трейса btn_create_transfer_full_time")
 
             viewModel.handleIntent(
@@ -135,18 +107,18 @@ class MainFragment : Fragment() {
 
         binding.fabAction.setOnClickListener {
             Log.d("my_test_log_fab_click", "click fab ${System.currentTimeMillis()}")
+            val span = Sentry.getSpan()?.startChild("navigation", "Main -> Second")
+                ?: Sentry.startTransaction("NavigateToSecond", "navigation")
+
             val action = MainFragmentDirections.actionMainFragmentToSecondFragment()
             findNavController().navigate(action)
+
+            span.finish()
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-
-        balanceTrace?.stop()
-        transferTrace?.stop()
-        balanceTrace = null
-        transferTrace = null
     }
 }

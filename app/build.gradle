@@ -107,6 +107,8 @@ dependencies {
     // https://firebase.google.com/docs/android/setup#available-libraries
 
     implementation 'com.google.firebase:firebase-perf'
+
+    implementation 'io.sentry:sentry-android-fragment:8.43.2'
 }
 
 // Allow references to generated code
