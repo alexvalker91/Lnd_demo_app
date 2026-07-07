@@ -2,8 +2,6 @@ package alex.valker91.lnd_demo_app
 
 import android.app.Application
 import android.os.SystemClock
-import com.google.firebase.perf.FirebasePerformance
-import com.google.firebase.perf.metrics.Trace
 import dagger.hilt.android.HiltAndroidApp
 import io.sentry.android.core.SentryAndroid
 import io.sentry.android.fragment.FragmentLifecycleIntegration

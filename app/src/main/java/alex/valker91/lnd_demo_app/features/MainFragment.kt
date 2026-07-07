@@ -17,9 +17,6 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.getValue
-
-import com.google.firebase.perf.FirebasePerformance
-import com.google.firebase.perf.metrics.Trace
 import io.sentry.Sentry
 
 @AndroidEntryPoint
@@ -41,8 +38,6 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-        FirebasePerformance.getInstance().isPerformanceCollectionEnabled = true
 
         observerFlow()
         observerButton()

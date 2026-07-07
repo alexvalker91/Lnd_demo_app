@@ -57,14 +57,6 @@ class MainViewModel @Inject constructor(
                         amount, clientIdFrom, accountNumberFrom, accountNumberTo, comment
                     )
                 }
-//            val result: Result<SynchronizedMoneyTransferResponse> =
-//                createNewSynchronizedMoneyTransferUseCase.execute(
-//                    amount,
-//                    clientIdFrom,
-//                    accountNumberFrom,
-//                    accountNumberTo,
-//                    comment
-//                )
 
             withContext(Dispatchers.Main) {
                 when (result) {

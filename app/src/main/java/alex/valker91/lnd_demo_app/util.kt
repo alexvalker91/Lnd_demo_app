@@ -1,5 +1,6 @@
 package alex.valker91.lnd_demo_app
 
+import android.util.Log
 import io.sentry.Sentry
 import io.sentry.SpanStatus
 suspend fun <T> traceSuspend(
@@ -8,6 +9,14 @@ suspend fun <T> traceSuspend(
     block: suspend () -> T
 ): T {
     val transaction = Sentry.startTransaction(operation, operationType)
+
+    val traceId = transaction.spanContext.traceId.toString()
+    Log.d("MyAutomation", "SENTRY_TRACE_ID=$traceId for operation=$operation")
+
+    Sentry.configureScope { scope ->
+        scope.transaction = transaction
+    }
+
     return try {
         val result = block()
         transaction.status = SpanStatus.OK
@@ -18,5 +27,11 @@ suspend fun <T> traceSuspend(
         throw e
     } finally {
         transaction.finish()
+
+        Sentry.configureScope { scope ->
+            if (scope.transaction == transaction) {
+                scope.transaction = null
+            }
+        }
     }
 }

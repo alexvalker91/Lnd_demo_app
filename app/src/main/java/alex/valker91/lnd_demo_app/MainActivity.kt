@@ -25,6 +25,12 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
+        val testRunId = intent.getStringExtra("test_run_id")
+
+        if (!testRunId.isNullOrEmpty()) {
+            Sentry.setTag("test_run_id", testRunId)
+            Log.d("MyAutomation", "Получен test_run_id извне: $testRunId")
+        }
 //        measureColdStart()
     }
 

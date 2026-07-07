@@ -50,4 +50,11 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_gravity="center"
         android:padding="16dp" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Button" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
