@@ -85,7 +85,7 @@ class AccountBalanceTest {
         println("Log: Тост получен за $durationMs мс на скорости $speed")
 
         Assert.assertTrue(
-            "Ошибка! Тост Success не появился на скорости: $speed",
+            "Тост Success не появился на скорости: $speed",
             toastText.contains("Success")
         )
     }

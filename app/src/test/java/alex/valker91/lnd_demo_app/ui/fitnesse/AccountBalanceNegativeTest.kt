@@ -2,7 +2,8 @@ package alex.valker91.lnd_demo_app.ui.fitnesse
 
 import alex.valker91.lnd_demo_app.ui.page.FirstPage
 
-class AccountBalanceFitnesseTest {
+// http://localhost:8089/AccountBalanceNegativeTest?edit
+class AccountBalanceNegativeTest {
 
     private var accountBalanceToTest: String = ""
     fun setAccountNumber(numberFromTable: String) {
