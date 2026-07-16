@@ -85,7 +85,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/textViewUserInfo"/>
 
                     <Button
-                        android:id="@+id/btnGetBalances"
+                        android:id="@+id/btnGetBalancesNewBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Get"
@@ -100,7 +100,7 @@
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/btnGetBalances" />
+                        app:layout_constraintTop_toBottomOf="@+id/btnGetBalancesNewBtn" />
 
                     <TextView
                         android:id="@+id/tvAccountId"

@@ -80,7 +80,7 @@ class MainFragment : Fragment() {
     }
 
     private fun observerButton() {
-        binding.btnGetBalances.setOnClickListener {
+        binding.btnGetBalancesNewBtn.setOnClickListener {
             Log.d("my_test_log", "click btn_get_balance_full_time ${System.currentTimeMillis()}")
 
             viewModel.handleIntent(GetBalance(binding.etAccountNumber.text.toString()))
