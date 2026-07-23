@@ -22,5 +22,13 @@
         <action
             android:id="@+id/action_secondFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_secondFragment_to_gameFragment"
+            app:destination="@id/gameFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/gameFragment"
+        android:name="alex.valker91.lnd_demo_app.features.GameFragment"
+        android:label="fragment_game"
+        tools:layout="@layout/fragment_game" />
 </navigation>

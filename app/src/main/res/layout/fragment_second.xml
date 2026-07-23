@@ -57,4 +57,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="Button" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:contentDescription="Play 2048"
+        app:srcCompat="@android:drawable/ic_menu_compass" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
