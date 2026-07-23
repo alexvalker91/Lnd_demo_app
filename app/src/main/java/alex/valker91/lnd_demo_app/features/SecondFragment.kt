@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import alex.valker91.lnd_demo_app.R
 import alex.valker91.lnd_demo_app.databinding.FragmentSecondBinding
 import alex.valker91.lnd_demo_app.second.GetUserById
 import alex.valker91.lnd_demo_app.second.SecondEffect
@@ -49,6 +50,10 @@ class SecondFragment : Fragment() {
         observerFlow()
         observerButton()
         observeEffects()
+
+        binding.fabGame.setOnClickListener {
+            findNavController().navigate(R.id.action_secondFragment_to_gameFragment)
+        }
     }
 
     private fun observerButton() {
